@@ -32,9 +32,10 @@
 	<script src="./src/js/timebar.js"></script>
 	<script>
 		$(document).ready(function () {
-			const timebar = $("#timelineId").timebar({
+
+			$("#timelineId").timebar({
 				totalTimeInSecond: 550,
-				cuePoints: [60, 120, 180, 240, 300, 360],
+				cuePoints: [0, 110, 220, 330, 440, 550],
 				width: '1000px',
 				multiSelect: true,
 				barClicked(time) {
@@ -46,6 +47,7 @@
 					$("#duration").text(selectedTime);
 				}
 			});
+
 		});
 	</script>
 </head>

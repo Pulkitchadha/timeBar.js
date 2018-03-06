@@ -31,12 +31,14 @@
 		};
 		this.setWidth = function (width) {
 			$.fn.timebar.defaults.width = width;
-			$(".timeline-cover").css('width', width);
+			width = this.getActualWidth() + 57;
+			$(".timeline-cover").css('width', width + 'px');
 			return this;
 		};
 		this.getActualWidth = function () {
-			const width = $.fn.timebar.defaults.width;
-			return width.replace(/px|%/g, '');
+			let width = $.fn.timebar.defaults.width;
+			width = parseInt(width.replace(/px|%/g, ''));
+			return width;
 		}
 		this.getCuepoints = function () {
 			return $.fn.timebar.defaults.cuePoints;
@@ -87,6 +89,16 @@
 				}
 			});
 
+			// $(this).on("dblclick", '.pointer', function () {
+			// 	const options = $.fn.timebar.defaults;
+
+			// 	$(this).removeClass("pointerSelected");
+
+			// 	// if (typeof options.pointerClicked === 'function') {
+			// 	// 	options.pointerClicked.call(this, self.getSelectedTime());
+			// 	// }
+			// });
+
 			$(this).on('click', '#deleteCuePoint', function () {
 				removeCuepoint();
 			});
@@ -111,7 +123,8 @@
 		selectedTime: 0,
 		multiSelect: false,
 		// events
-		barClicked: null
+		barClicked: null,
+		pointerClicked: null
 	};
 
 	function init(ele) {
@@ -211,7 +224,7 @@
 		const offsetLeft = (event.pageX - offset.left);
 
 		const leftPos = offsetLeft;
-		const leftPosCal = (((leftPos * 100) / self.getActualWidth() + 3).toFixed(0));
+		const leftPosCal = (((leftPos * 100) / self.getActualWidth()).toFixed(0));
 
 		const selectedTime = (options.totalTimeInSecond * leftPosCal) / 100;
 
@@ -225,8 +238,8 @@
 	};
 
 	function pointerClicked(element, options) {
-		if ($(element).hasClass("pointerSelected") && !options.multiSelect) {
-			$('.pointer').removeClass("pointerSelected");
+		if ($(element).hasClass("pointerSelected")) {
+			$(element).removeClass("pointerSelected");
 		} else {
 			$(element).addClass("pointerSelected");
 		}
