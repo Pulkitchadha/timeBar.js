@@ -76,7 +76,9 @@
 			});
 
 			$(this).on("click", '.pointer', function () {
-				const time = pointerClicked(this);
+				const options = $.fn.timebar.defaults;
+
+				const time = pointerClicked(this, options);
 
 				self.setSelectedTime(time);
 
@@ -107,6 +109,7 @@
 		width: 0,
 		globalPageX: 0,
 		selectedTime: 0,
+		multiSelect: false,
 		// events
 		barClicked: null
 	};
@@ -208,7 +211,7 @@
 		const offsetLeft = (event.pageX - offset.left);
 
 		const leftPos = offsetLeft;
-		const leftPosCal = +(((leftPos * 100) / self.getActualWidth() + 2).toFixed(0));
+		const leftPosCal = (((leftPos * 100) / self.getActualWidth() + 3).toFixed(0));
 
 		const selectedTime = (options.totalTimeInSecond * leftPosCal) / 100;
 
@@ -221,11 +224,10 @@
 		return selectedTime;
 	};
 
-	function pointerClicked(element) {
-		if ($(element).hasClass("pointerSelected")) {
+	function pointerClicked(element, options) {
+		if ($(element).hasClass("pointerSelected") && !options.multiSelect) {
 			$('.pointer').removeClass("pointerSelected");
 		} else {
-			$('.pointer').removeClass("pointerSelected");
 			$(element).addClass("pointerSelected");
 		}
 		const selectedTime = $(element).attr("id");
