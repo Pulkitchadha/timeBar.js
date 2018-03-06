@@ -1,116 +1,120 @@
-.timeline-cover{
-	margin:20px 0;
-	padding:0px 25px 40px 25px;
-	background:#F8F8F8;
-	border:1px solid #ddd;
+.timeline-cover {
+	margin: 20px 0;
+	padding: 0px 25px 40px 25px;
+	background: #F8F8F8;
+	border: 1px solid #ddd;
 }
 
-.timeline-bar{
-	height:2px;
-	width:100%;
-	background:#000;
-	position:relative;
+.timeline-bar {
+	height: 2px;
+	width: 100%;
+	background: #000;
+	position: relative;
 }
 
-.steps-bar{
-	position:absolute;
-	top:-27px;
-	left:0;
-	width:100%;
-	height:50px;
-	cursor:pointer;
+.steps-bar {
+	position: absolute;
+	top: -27px;
+	left: 0;
+	width: 100%;
+	height: 50px;
+	cursor: pointer;
 }
 
-.step{
-	float:left;
-	width:2.03%;
-	margin-top:29px;
-	text-align:center;
-	position:relative;
+.step {
+	float: left;
+	width: 2.03%;
+	margin-top: 29px;
+	text-align: center;
+	position: relative;
 }
 
-.step:last-child{
-	width:2px !important;
+.step:last-child {
+	width: 2px !important;
 }
 
-.step:first-child .step-border{
-	height:20px;
-	width:2px;
-	background:#000;
-	margin-top:-10px;
+.step:first-child .step-border {
+	height: 20px;
+	width: 2px;
+	background: #000;
+	margin-top: -10px;
 }
 
-.step:nth-child(10n) .step-border{
-	height:20px;
-	width:2px;
-	background:#000;
-	margin-top:-10px;
+.step:nth-child(10n) .step-border {
+	height: 20px;
+	width: 2px;
+	background: #000;
+	margin-top: -10px;
 }
 
-.step-border{
-	height:10px;
-	width:2px;
-	background:#999;
-	margin-left:1.5%;
-	display:block;
+.step-border {
+	height: 10px;
+	width: 2px;
+	background: #999;
+	margin-left: 1.5%;
+	display: block;
 }
 
-.time-instant{
-	position:absolute;
-	top:-30px;
-	left:-17px;
+.time-instant {
+	position: absolute;
+	top: -30px;
+	left: -17px;
 }
 
-.pointer{
-	position:absolute;
-	top:10px;
-	margin-left:-10px;
+.pointer {
+	position: absolute;
+	top: 10px;
+	margin-left: -10px;
 	/* left:-10px; */
-	 border-width: 10px;
-    border-style: solid;
-    border-color: transparent transparent #666666 transparent;
-	cursor:pointer;
-	transition:100ms all linear;
-	-webkit-transition:100ms all linear;
-	-moz-transition:100ms all linear;
+	border-width: 10px;
+	border-style: solid;
+	border-color: transparent transparent #666666 transparent;
+	cursor: pointer;
+	transition: 100ms all linear;
+	-webkit-transition: 100ms all linear;
+	-moz-transition: 100ms all linear;
 }
 
-.pointerSelected{
+.pointerSelected {
 	border-color: transparent transparent #D04640 transparent !important;
 }
 
-
-.selection-line{
-	position:absolute;
-	top:-10px;
-	left:0px;
-	height:50px;
-	width:2px;
-	background:#ff0000;
+.selection-line {
+	position: absolute;
+	top: -10px;
+	left: 0px;
+	height: 50px;
+	width: 2px;
+	background: #ff0000;
 }
 
-#draggable{
-	height:50px;
-	width:2px;
-	background:#ff0000;
-	top:24px;
-	cursor:pointer;
-	z-index:1000;
-	position:relative;
+#draggable {
+	height: 50px;
+	width: 2px;
+	background: #ff0000;
+	top: 24px;
+	cursor: pointer;
+	z-index: 1000;
+	position: relative;
 }
 
-.MB10{
-	margin-bottom:10px;
+.MB10 {
+	margin-bottom: 10px;
 }
 
-#embedJWPlayerTarget{
-  width:100% !important;
+#embedJWPlayerTarget {
+	width: 100% !important;
 }
 
-#UpdateCuePoint{
-	display:none;
+#UpdateCuePoint {
+	display: none;
 }
 
-#boxdiv{
-	  display:none
+#boxdiv {
+	display: none
+}
+
+.cuepoint-btn {
+	text-align: right;
+	margin-right: 13%;
 }

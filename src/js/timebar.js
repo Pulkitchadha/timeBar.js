@@ -118,7 +118,7 @@
 				</div>`;
 
 		// buttons
-		data += `<div>
+		data += `<div class="cuepoint-btn">
 					<button class='btn btn-primary' id='addCuePoint'>Add</button>
 					<button class='btn btn-primary' id='UpdateCuePoint'>Update</button>
 					<button class='btn btn-danger' id='deleteCuePoint'>Remove</button>
