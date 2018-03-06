@@ -11,32 +11,36 @@
 
 	<body>
 		<h1>Time Bar</h3>
-		<div id='timelineId'></div>
-		<br>
-		<br>
-		<input type='button' value='Refresh' onclick='window.location.reload();' />
-		<br>
-		<br> Duration:
-		<label id='duration'>0 Sec</label>
+			<div id='timelineId'></div>
+			<br>
+			<br>
+			<input type='button' value='Refresh' onclick='window.location.reload();' />
+			<br>
+			<br> Duration:
+			<label id='duration'>0 Sec</label>
 	</body>
 	<style>
-			body {
-				text-align: center;
-			}
-	
-			#timelineId {
-				margin-left: 10%;
-				margin-top: 4%;
-			}
-		</style>
+		body {
+			text-align: center;
+		}
+
+		#timelineId {
+			margin-left: 10%;
+			margin-top: 4%;
+		}
+	</style>
 	<script src="./src/js/timebar.js"></script>
 	<script>
 		$(document).ready(function () {
 			const timebar = $("#timelineId").timebar({
-				totalTime: 550,
+				totalTimeInSecond: 550,
 				cuePoints: [60, 120, 180, 240, 300, 360],
 				width: '1000px',
 				barClicked(time) {
+					const selectedTime = (time).toFixed(2) + ' Sec';
+					$("#duration").text(selectedTime);
+				},
+				pointerClicked(time) {
 					const selectedTime = (time).toFixed(2) + ' Sec';
 					$("#duration").text(selectedTime);
 				}

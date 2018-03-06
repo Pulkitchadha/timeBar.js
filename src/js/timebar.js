@@ -2,7 +2,7 @@
  * Author: Pulkit Chadha
  * Plugin Name: Time Bar 
  * 
-*/
+ */
 (function ($) {
 	$.fn.timebar = function (options = {}) {
 		const self = this;
@@ -16,14 +16,14 @@
 			return $.fn.timebar.defaults.selectedTime;
 		};
 		this.setSelectedTime = function (time) {
-			$.fn.timebar.defaults.selectedTime = time;
+			$.fn.timebar.defaults.selectedTime = parseInt(time);
 			return this;
 		};
 		this.getTotalTime = function () {
-			return $.fn.timebar.defaults.totalTime;
+			return $.fn.timebar.defaults.totalTimeInSecond;
 		};
 		this.setTotalTime = function (time) {
-			$.fn.timebar.defaults.totalTime = time;
+			$.fn.timebar.defaults.totalTimeInSecond = parseInt(time);
 			return this;
 		};
 		this.getWidth = function () {
@@ -66,15 +66,23 @@
 			init(self);
 
 			$(this).on('click', '.steps-bar', function (event) {
-				const selectedTime = barClicked(this, event, self);
+				const time = barClicked(this, event, self);
 
-				if ($.isFunction(options.barClicked)) {
-					options.barClicked.call(this, selectedTime);
+				self.setSelectedTime(time);
+
+				if (typeof options.barClicked === 'function') {
+					options.barClicked.call(this, self.getSelectedTime());
 				}
 			});
 
 			$(this).on("click", '.pointer', function () {
-				pointerClicked();
+				const time = pointerClicked(this);
+
+				self.setSelectedTime(time);
+
+				if (typeof options.pointerClicked === 'function') {
+					options.pointerClicked.call(this, self.getSelectedTime());
+				}
 			});
 
 			$(this).on('click', '#deleteCuePoint', function () {
@@ -94,7 +102,7 @@
 	$.fn.timebar.defaults = {
 		//properties
 		element: null,
-		totalTime: 0,
+		totalTimeInSecond: 0,
 		cuePoints: [],
 		width: 0,
 		globalPageX: 0,
@@ -135,19 +143,19 @@
 			time: '00:00'
 		}, {
 			position: 10,
-			time: toDuration(Math.round(options.totalTime / 5))
+			time: toDuration(Math.round(options.totalTimeInSecond / 5))
 		}, {
 			position: 20,
-			time: toDuration(Math.round((options.totalTime / 5) * 2))
+			time: toDuration(Math.round((options.totalTimeInSecond / 5) * 2))
 		}, {
 			position: 30,
-			time: toDuration(Math.round((options.totalTime / 5) * 3))
+			time: toDuration(Math.round((options.totalTimeInSecond / 5) * 3))
 		}, {
 			position: 40,
-			time: toDuration(Math.round((options.totalTime / 5) * 4))
+			time: toDuration(Math.round((options.totalTimeInSecond / 5) * 4))
 		}, {
 			position: 50,
-			time: toDuration(Math.round((options.totalTime / 5) * 5))
+			time: toDuration(Math.round((options.totalTimeInSecond / 5) * 5))
 		}];
 
 		// mark bars
@@ -186,10 +194,10 @@
 		const options = $.fn.timebar.defaults;
 
 		$.each(options.cuePoints, function (i, cuePoint) {
-			const eff = (cuePoint * 100) / options.totalTime;
-			const animateLeft = (ele.getActualWidth() * eff) / 100;
+			const eff = (cuePoint * 100) / options.totalTimeInSecond;
+			const animateLeft = ((ele.getActualWidth() * eff) / 100).toFixed(2);
 			const divId = cuePoint;
-			$(".timeline-bar").append(`<div class="pointer" style="left:'${animateLeft} px'" id="${divId}"></div>`);
+			$(".timeline-bar").append(`<div class="pointer" style="left:${animateLeft}px" id="${divId}"></div>`);
 		});
 	}
 
@@ -202,7 +210,7 @@
 		const leftPos = offsetLeft;
 		const leftPosCal = +(((leftPos * 100) / self.getActualWidth() + 2).toFixed(0));
 
-		options.selectedTime = (options.totalTime * leftPosCal) / 100;
+		const selectedTime = (options.totalTimeInSecond * leftPosCal) / 100;
 
 		$('.pointer').removeClass("pointerSelected");
 
@@ -210,20 +218,21 @@
 			left: offsetLeft
 		});
 
-		return options.selectedTime;
+		return selectedTime;
 	};
 
-	function pointerClicked() {
-		if ($(this).hasClass("pointerSelected")) {
+	function pointerClicked(element) {
+		if ($(element).hasClass("pointerSelected")) {
 			$('.pointer').removeClass("pointerSelected");
 		} else {
 			$('.pointer').removeClass("pointerSelected");
-			$(this).addClass("pointerSelected");
-			let time = $(this).attr("id");
+			$(element).addClass("pointerSelected");
 		}
+		const selectedTime = $(element).attr("id");
+		return selectedTime;
 	};
 
-	function addCuePoint() {
+	function addCuePoint(time) {
 		var cuePoint = data.response.cuePoint
 		var eff = ((cuePoint.startTime / 1000) * 100) / duration;
 		var animateLeft = (barLength * eff) / 100;
@@ -250,9 +259,7 @@
 		// var removeId = $(".pointerSelected").attr("_id");
 		// var removeMediaId = $(".pointerSelected").attr("media-id");
 		$(".pointerSelected").hide();
-		// $("#startAt:text").val();
 		// removeFromList(removeId);
-		// clearBox();
 	};
 
 })(jQuery);
