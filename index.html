@@ -18,6 +18,11 @@
 				<input id="add-input" class="pull-left" type='text' placeholder="Enter time in seconds" />
 				<input id="add-btn" class='btn btn-primary btn-sm' type='button' value="Add" />
 				<input id="update-btn" class='btn btn-success btn-sm' type='button' value="Update" />
+				<input id="reset-btn" class='btn btn-warning btn-sm' type='button' value="Reset" />
+				<br>
+				<br> Show
+				<input class="radio-btn" type='radio' name="radio-btn" value="true" checked/> Hide
+				<input class="radio-btn" type='radio' name="radio-btn" value="false" />
 				<br>
 				<br>
 				<input id="rm-btn" class='btn btn-danger btn-sm' type='button' value="Delete" />
@@ -70,6 +75,15 @@
 
 			$(document).on('click', '#rm-btn', function () {
 				timebar.deleteSelectedCuepoints();
+			});
+
+			$(document).on('click', '#reset-btn', function () {
+				$('#add-input').val('');
+			});
+
+			$(document).on('change', '.radio-btn', function () {
+				const val = $('input[name=radio-btn]:checked').val();
+				timebar.showHideCuepoints(val);
 			});
 		});
 	</script>

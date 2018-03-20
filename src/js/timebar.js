@@ -16,6 +16,8 @@
 			return $.fn.timebar.defaults.selectedTime;
 		};
 		this.setSelectedTime = function (time) {
+			if (!time) throw new Error('please pass the valid time');
+
 			$.fn.timebar.defaults.selectedTime = parseInt(time);
 			return this;
 		};
@@ -23,6 +25,8 @@
 			return $.fn.timebar.defaults.totalTimeInSecond;
 		};
 		this.setTotalTime = function (time) {
+			if (!time) throw new Error('please pass the valid time');
+
 			$.fn.timebar.defaults.totalTimeInSecond = parseInt(time);
 			return this;
 		};
@@ -30,6 +34,8 @@
 			return $.fn.timebar.defaults.width;
 		};
 		this.setWidth = function (width) {
+			if (!width) throw new Error('please pass the valid width');
+
 			$.fn.timebar.defaults.width = width;
 			width = this.getActualWidth() + 57;
 			$(".timeline-cover").css('width', width + 'px');
@@ -44,6 +50,8 @@
 			return $.fn.timebar.defaults.cuepoints;
 		}
 		this.addCuepoints = function (cuepoint) {
+			if (!cuepoint) throw new Error('please pass the valid time');
+
 			cuepoint = parseInt(cuepoint);
 
 			if (!$.fn.timebar.defaults.cuepoints.includes(cuepoint)) {
@@ -64,9 +72,13 @@
 				selectedCuepoints.push(parseInt(id));
 			});
 
-			$.fn.timebar.defaults.cuepoints = cuepoints.filter((val) => !selectedCuepoints.includes(val));
+			if (selectedCuepoints.length) {
+				$.fn.timebar.defaults.cuepoints = cuepoints.filter((val) => !selectedCuepoints.includes(val));
+				$(".pointerSelected").remove();
+			} else {
+				throw new Error('No Cuepoint is selected');
+			}
 
-			$(".pointerSelected").hide();
 			return this;
 		}
 		this.updateSelectedCuepoint = function (cuepoint) {
@@ -76,12 +88,11 @@
 
 			return this;
 		}
-		this.showCuepoints = function () {
-			$(".pointer").show();
-			return this;
-		}
-		this.hideCuepoints = function () {
-			$(".pointer").hide();
+		this.showHideCuepoints = function (show) {
+			if (!show) throw new Error('please pass a valid value');
+
+			parseBoolean(show) ? $(".pointer").show() : $(".pointer").hide();
+			
 			return this;
 		}
 
@@ -106,25 +117,13 @@
 				const options = $.fn.timebar.defaults;
 
 				$(this).hasClass("pointerSelected") ? $(this).removeClass("pointerSelected") : $(this).addClass("pointerSelected");
-				
+
 				self.setSelectedTime($(this).attr("id"));
 
 				if (typeof options.pointerClicked === 'function') {
 					options.pointerClicked.call(this, self.getSelectedTime());
 				}
 			});
-
-			// when user double click on cuepoints
-			$(this).on("dblclick", '.pointer', function () {});
-
-			//when user clicks on add button
-			$(this).on('click', '#addCuePoint', function () {});
-
-			//when user clicks on delete button
-			$(this).on('click', '#deleteCuePoint', function () {});
-
-			//when user clicks on update button
-			$(this).on('click', '#UpdateCuePoint', function () {});
 		});
 	};
 
@@ -137,9 +136,26 @@
 		globalPageX: 0,
 		selectedTime: 0,
 		multiSelect: false,
+		showCuepoints: true,
 		// events
 		barClicked: null,
-		pointerClicked: null
+		pointerClicked: null,
+		//Currently, Not supported
+
+		// life cycle methods
+		beforeCreate: null,
+		created: null,
+		beforeMount: null,
+		mounted: null,
+		beforeUpdate: null,
+		updated: null,
+		// hooks
+		beforeAddingCuepoint: null,
+		afterAddingCuepoint: null,
+		beforeUpdatingCuepoint: null,
+		afterUpdatingCuepoint: null,
+		beforeDeletingCuepoint: null,
+		afterDeletingCuepoint: null,
 	};
 
 	function init(ele) {
@@ -156,18 +172,9 @@
 					</div>
 				</div>`;
 
-		// buttons
-		data += `<div class="cuepoint-btn">
-					<button class='btn btn-primary' id='addCuePoint' style="display:none">Add</button>
-					<button class='btn btn-primary' id='UpdateCuePoint' style="display:none">Update</button>
-					<button class='btn btn-danger btn-sm' id='deleteCuePoint' style="display:none">Remove</button>
-				</div>`;
-
 		$(options.element).append(data);
 
-		const barWidth = $.fn.timebar.defaults.width;
-
-		ele.setWidth(barWidth);
+		ele.setWidth(options.width);
 
 		const intervals = [{
 			position: 1,
@@ -200,6 +207,10 @@
 		});
 
 		markCuepoints(options.cuepoints);
+
+		if (!options.showCuepoints) {
+			$(".pointer").hide();
+		}
 	};
 
 	function toDuration(sec_num) {
@@ -250,14 +261,8 @@
 		return selectedTime;
 	};
 
-	// function pointerClicked(element, options) {
-	// 	if ($(element).hasClass("pointerSelected")) {
-	// 		$(element).removeClass("pointerSelected");
-	// 	} else {
-	// 		$(element).addClass("pointerSelected");
-	// 	}
-	// 	const selectedTime = $(element).attr("id");
-	// 	return selectedTime;
-	// };
+	function parseBoolean(val) {
+		return(val.toLowerCase() === 'true');
+	}
 
 })(jQuery);
