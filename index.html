@@ -14,13 +14,19 @@
 			<div id='timelineId'></div>
 			<br>
 			<br>
-			<input id="cuepoint" type='text' placeholder="Enter time in seconds" />
-			<input id="add-btn" class='btn btn-primary btn-sm' type='button' value="Add" />
-			<input id="rm-btn" class='btn btn-danger btn-sm' type='button' value="Delete" />
-			<input class='btn btn-default btn-sm' type='button' value='Refresh' onclick='window.location.reload();' />
-			<br>
-			<br> Duration:
-			<label id='duration'>0 Sec</label>
+			<div>
+				<input id="add-input" class="pull-left" type='text' placeholder="Enter time in seconds" />
+				<input id="add-btn" class='btn btn-primary btn-sm' type='button' value="Add" />
+				<input id="update-btn" class='btn btn-success btn-sm' type='button' value="Update" />
+				<br>
+				<br>
+				<input id="rm-btn" class='btn btn-danger btn-sm' type='button' value="Delete" />
+				<input class='btn btn-info btn-sm' type='button' value='Refresh' onclick='window.location.reload();' />
+				<br>
+				<br> Duration:
+				<label id='duration'>0 Sec</label>
+			</div>
+
 	</body>
 	<style>
 		body {
@@ -48,12 +54,18 @@
 				pointerClicked(time) {
 					const selectedTime = (time).toFixed(2) + ' Sec';
 					$("#duration").text(selectedTime);
+					$('#add-input').val(time);
 				}
 			});
 
 			$(document).on('click', '#add-btn', function () {
-				const time = $('#cuepoint').val();
+				const time = $('#add-input').val();
 				timebar.addCuepoints(time);
+			});
+
+			$(document).on('click', '#update-btn', function () {
+				const time = $('#add-input').val();
+				timebar.updateSelectedCuepoint(time);
 			});
 
 			$(document).on('click', '#rm-btn', function () {

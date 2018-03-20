@@ -45,8 +45,14 @@
 		}
 		this.addCuepoints = function (cuepoint) {
 			cuepoint = parseInt(cuepoint);
-			$.fn.timebar.defaults.cuepoints.push(cuepoint);
-			markCuepoints(cuepoint);
+
+			if (!$.fn.timebar.defaults.cuepoints.includes(cuepoint)) {
+				$.fn.timebar.defaults.cuepoints.push(cuepoint);
+				markCuepoints(cuepoint);
+			} else {
+				throw new Error('Cuepoint already exists');
+			}
+
 			return this;
 		}
 		this.deleteSelectedCuepoints = function () {
@@ -61,6 +67,13 @@
 			$.fn.timebar.defaults.cuepoints = cuepoints.filter((val) => !selectedCuepoints.includes(val));
 
 			$(".pointerSelected").hide();
+			return this;
+		}
+		this.updateSelectedCuepoint = function (cuepoint) {
+			this.deleteSelectedCuepoints();
+
+			this.addCuepoints(cuepoint);
+
 			return this;
 		}
 		this.showCuepoints = function () {
@@ -92,9 +105,9 @@
 			$(this).on("click", '.pointer', function () {
 				const options = $.fn.timebar.defaults;
 
-				const time = pointerClicked(this, options);
-
-				self.setSelectedTime(time);
+				$(this).hasClass("pointerSelected") ? $(this).removeClass("pointerSelected") : $(this).addClass("pointerSelected");
+				
+				self.setSelectedTime($(this).attr("id"));
 
 				if (typeof options.pointerClicked === 'function') {
 					options.pointerClicked.call(this, self.getSelectedTime());
@@ -102,22 +115,16 @@
 			});
 
 			// when user double click on cuepoints
-			$(this).on("dblclick", '.pointer', function () {
-
-			});
+			$(this).on("dblclick", '.pointer', function () {});
 
 			//when user clicks on add button
 			$(this).on('click', '#addCuePoint', function () {});
 
 			//when user clicks on delete button
-			$(this).on('click', '#deleteCuePoint', function () {
-				$(".pointerSelected").hide();
-			});
+			$(this).on('click', '#deleteCuePoint', function () {});
 
 			//when user clicks on update button
-			$(this).on('click', '#UpdateCuePoint', function () {
-				updateCuePoint();
-			});
+			$(this).on('click', '#UpdateCuePoint', function () {});
 		});
 	};
 
@@ -243,35 +250,14 @@
 		return selectedTime;
 	};
 
-	function pointerClicked(element, options) {
-		if ($(element).hasClass("pointerSelected")) {
-			$(element).removeClass("pointerSelected");
-		} else {
-			$(element).addClass("pointerSelected");
-		}
-		const selectedTime = $(element).attr("id");
-		return selectedTime;
-	};
-
-	function updateCuepoint() {
-		// var sourceContainer = $("#video-dropdown").val();
-		// var removeId = $(".pointerSelected").attr("_id");
-		const eff = ((temp.startTime / 1000) * 100) / duration;
-		const animateLeft = ($.fn.timebar.getActualWidth() * eff) / 100;
-		const divId = temp.startTime;
-		$(".timeline-bar").append('<div class="pointer" _id="' + temp.cuePointId + '" videoId= "' + temp.videoId + '" media-id="' + temp.mediaEntryId + '"  style="left:' + (animateLeft) + 'px" id="' + divId + '"></div>');
-		// $(".pointerSelected").hide();
-		// $("#UpdateCuePoint").hide();
-		// $("#addCuePoint").hide();
-		// removeFromList(temp.cuePointId);
-		// cuepoints.push(temp);
-	};
-
-	function removeCuepoint() {
-		// var removeId = $(".pointerSelected").attr("_id");
-		// var removeMediaId = $(".pointerSelected").attr("media-id");
-		// $(".pointerSelected").hide();
-		// removeFromList(removeId);
-	};
+	// function pointerClicked(element, options) {
+	// 	if ($(element).hasClass("pointerSelected")) {
+	// 		$(element).removeClass("pointerSelected");
+	// 	} else {
+	// 		$(element).addClass("pointerSelected");
+	// 	}
+	// 	const selectedTime = $(element).attr("id");
+	// 	return selectedTime;
+	// };
 
 })(jQuery);
