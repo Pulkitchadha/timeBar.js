@@ -16,6 +16,7 @@
 			<br>
 			<input id="cuepoint" type='text' placeholder="Enter time in seconds" />
 			<input id="add-btn" class='btn btn-primary btn-sm' type='button' value="Add" />
+			<input id="rm-btn" class='btn btn-danger btn-sm' type='button' value="Delete" />
 			<input class='btn btn-default btn-sm' type='button' value='Refresh' onclick='window.location.reload();' />
 			<br>
 			<br> Duration:
@@ -37,7 +38,7 @@
 
 			const timebar = $("#timelineId").timebar({
 				totalTimeInSecond: 550,
-				cuePoints: [0, 110, 220, 330, 440, 550],
+				cuepoints: [0, 110, 220, 330, 440, 550],
 				width: '1000px',
 				multiSelect: true,
 				barClicked(time) {
@@ -55,6 +56,9 @@
 				timebar.addCuepoints(time);
 			});
 
+			$(document).on('click', '#rm-btn', function () {
+				timebar.deleteSelectedCuepoints();
+			});
 		});
 	</script>
 </head>

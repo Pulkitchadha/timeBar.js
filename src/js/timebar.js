@@ -41,21 +41,26 @@
 			return width;
 		}
 		this.getCuepoints = function () {
-			return $.fn.timebar.defaults.cuePoints;
+			return $.fn.timebar.defaults.cuepoints;
 		}
 		this.addCuepoints = function (cuepoint) {
 			cuepoint = parseInt(cuepoint);
-			$.fn.timebar.defaults.cuePoints.push(parseInt(cuepoint));
-			markCuePoints(cuepoint);
+			$.fn.timebar.defaults.cuepoints.push(cuepoint);
+			markCuepoints(cuepoint);
 			return this;
 		}
-		this.deleteCuepoints = function (id) {
+		this.deleteSelectedCuepoints = function () {
 			const cuepoints = $.fn.timebar.defaults.cuepoints;
-			for (let i = 0; i < cuePoints.length; i++) {
-				if (cuePoints[i] == id) {
-					cuePoints.splice(i, 1);
-				}
-			}
+			const selectedCuepoints = [];
+
+			$(".pointerSelected").each(function () {
+				const id = $(this).attr("id");
+				selectedCuepoints.push(parseInt(id));
+			});
+
+			$.fn.timebar.defaults.cuepoints = cuepoints.filter((val) => !selectedCuepoints.includes(val));
+
+			$(".pointerSelected").hide();
 			return this;
 		}
 		this.showCuepoints = function () {
@@ -72,6 +77,7 @@
 		return self.each(function () {
 			init(self);
 
+			// When user clicks on timebar
 			$(this).on('click', '.steps-bar', function (event) {
 				const time = barClicked(this, event, self);
 
@@ -82,6 +88,7 @@
 				}
 			});
 
+			// when user clicks on cuepoints
 			$(this).on("click", '.pointer', function () {
 				const options = $.fn.timebar.defaults;
 
@@ -94,18 +101,20 @@
 				}
 			});
 
+			// when user double click on cuepoints
 			$(this).on("dblclick", '.pointer', function () {
 
 			});
 
+			//when user clicks on add button
+			$(this).on('click', '#addCuePoint', function () {});
+
+			//when user clicks on delete button
 			$(this).on('click', '#deleteCuePoint', function () {
-				removeCuepoint();
+				$(".pointerSelected").hide();
 			});
 
-			$(this).on('click', '#addCuePoint', function () {
-				addCuePoint();
-			});
-
+			//when user clicks on update button
 			$(this).on('click', '#UpdateCuePoint', function () {
 				updateCuePoint();
 			});
@@ -116,7 +125,7 @@
 		//properties
 		element: null,
 		totalTimeInSecond: 0,
-		cuePoints: [],
+		cuepoints: [],
 		width: 0,
 		globalPageX: 0,
 		selectedTime: 0,
@@ -144,7 +153,7 @@
 		data += `<div class="cuepoint-btn">
 					<button class='btn btn-primary' id='addCuePoint' style="display:none">Add</button>
 					<button class='btn btn-primary' id='UpdateCuePoint' style="display:none">Update</button>
-					<button class='btn btn-danger btn-sm' id='deleteCuePoint'>Remove</button>
+					<button class='btn btn-danger btn-sm' id='deleteCuePoint' style="display:none">Remove</button>
 				</div>`;
 
 		$(options.element).append(data);
@@ -183,7 +192,7 @@
 			$(`.step:nth-child(${interval.position})`).append(`<span class="time-instant">${interval.time}</span>`);
 		});
 
-		markCuePoints(options.cuePoints);
+		markCuepoints(options.cuepoints);
 	};
 
 	function toDuration(sec_num) {
@@ -203,9 +212,9 @@
 		return time;
 	}
 
-	function markCuePoints(cuePoints = []) {
+	function markCuepoints(cuepoints = []) {
 		const options = $.fn.timebar.defaults;
-		let cuepointArr = Array.isArray(cuePoints) ? cuePoints : [cuePoints];
+		let cuepointArr = Array.isArray(cuepoints) ? cuepoints : [cuepoints];
 
 		$.each(cuepointArr, function (i, time) {
 			const eff = (time * 100) / options.totalTimeInSecond;
@@ -251,17 +260,17 @@
 		const animateLeft = ($.fn.timebar.getActualWidth() * eff) / 100;
 		const divId = temp.startTime;
 		$(".timeline-bar").append('<div class="pointer" _id="' + temp.cuePointId + '" videoId= "' + temp.videoId + '" media-id="' + temp.mediaEntryId + '"  style="left:' + (animateLeft) + 'px" id="' + divId + '"></div>');
-		$(".pointerSelected").hide();
-		$("#UpdateCuePoint").hide();
-		$("#addCuePoint").hide();
+		// $(".pointerSelected").hide();
+		// $("#UpdateCuePoint").hide();
+		// $("#addCuePoint").hide();
 		// removeFromList(temp.cuePointId);
-		// cuePoints.push(temp);
+		// cuepoints.push(temp);
 	};
 
 	function removeCuepoint() {
 		// var removeId = $(".pointerSelected").attr("_id");
 		// var removeMediaId = $(".pointerSelected").attr("media-id");
-		$(".pointerSelected").hide();
+		// $(".pointerSelected").hide();
 		// removeFromList(removeId);
 	};
 
