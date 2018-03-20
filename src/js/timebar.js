@@ -44,7 +44,9 @@
 			return $.fn.timebar.defaults.cuePoints;
 		}
 		this.addCuepoints = function (cuepoint) {
-			$.fn.timebar.defaults.cuepoints.push(cuepoint);
+			cuepoint = parseInt(cuepoint);
+			$.fn.timebar.defaults.cuePoints.push(parseInt(cuepoint));
+			markCuePoints(cuepoint);
 			return this;
 		}
 		this.deleteCuepoints = function (id) {
@@ -54,12 +56,15 @@
 					cuePoints.splice(i, 1);
 				}
 			}
+			return this;
 		}
 		this.showCuepoints = function () {
 			$(".pointer").show();
+			return this;
 		}
 		this.hideCuepoints = function () {
 			$(".pointer").hide();
+			return this;
 		}
 
 		// events
@@ -89,15 +94,9 @@
 				}
 			});
 
-			// $(this).on("dblclick", '.pointer', function () {
-			// 	const options = $.fn.timebar.defaults;
+			$(this).on("dblclick", '.pointer', function () {
 
-			// 	$(this).removeClass("pointerSelected");
-
-			// 	// if (typeof options.pointerClicked === 'function') {
-			// 	// 	options.pointerClicked.call(this, self.getSelectedTime());
-			// 	// }
-			// });
+			});
 
 			$(this).on('click', '#deleteCuePoint', function () {
 				removeCuepoint();
@@ -143,9 +142,9 @@
 
 		// buttons
 		data += `<div class="cuepoint-btn">
-					<button class='btn btn-primary' id='addCuePoint'>Add</button>
-					<button class='btn btn-primary' id='UpdateCuePoint'>Update</button>
-					<button class='btn btn-danger' id='deleteCuePoint'>Remove</button>
+					<button class='btn btn-primary' id='addCuePoint' style="display:none">Add</button>
+					<button class='btn btn-primary' id='UpdateCuePoint' style="display:none">Update</button>
+					<button class='btn btn-danger btn-sm' id='deleteCuePoint'>Remove</button>
 				</div>`;
 
 		$(options.element).append(data);
@@ -184,9 +183,7 @@
 			$(`.step:nth-child(${interval.position})`).append(`<span class="time-instant">${interval.time}</span>`);
 		});
 
-		if (options.cuePoints.length) {
-			markCuePoints(ele);
-		}
+		markCuePoints(options.cuePoints);
 	};
 
 	function toDuration(sec_num) {
@@ -206,14 +203,14 @@
 		return time;
 	}
 
-	function markCuePoints(ele) {
+	function markCuePoints(cuePoints = []) {
 		const options = $.fn.timebar.defaults;
+		let cuepointArr = Array.isArray(cuePoints) ? cuePoints : [cuePoints];
 
-		$.each(options.cuePoints, function (i, cuePoint) {
-			const eff = (cuePoint * 100) / options.totalTimeInSecond;
-			const animateLeft = ((ele.getActualWidth() * eff) / 100).toFixed(2);
-			const divId = cuePoint;
-			$(".timeline-bar").append(`<div class="pointer" style="left:${animateLeft}px" id="${divId}"></div>`);
+		$.each(cuepointArr, function (i, time) {
+			const eff = (time * 100) / options.totalTimeInSecond;
+			const animateLeft = eff; //((ele.getActualWidth() * eff) / 100).toFixed(2);
+			$(".timeline-bar").append(`<div class="pointer" style="left:${animateLeft}%" id="${time}"></div>`);
 		});
 	}
 
@@ -247,15 +244,6 @@
 		return selectedTime;
 	};
 
-	function addCuePoint(time) {
-		var cuePoint = data.response.cuePoint
-		var eff = ((cuePoint.startTime / 1000) * 100) / duration;
-		var animateLeft = (barLength * eff) / 100;
-		var divId = cuePoint.startTime;
-		$(".timeline-bar").append('<div class="pointer" _id="' + cuePoint._id + '" videoId= "' + cuePoint.videoId + '" media-id="' + cuePoint.mediaEntryId + '"  style="left:' + (animateLeft) + 'px" id="' + divId + '"></div>');
-		cuePoints.push(cuePoint);
-	};
-
 	function updateCuepoint() {
 		// var sourceContainer = $("#video-dropdown").val();
 		// var removeId = $(".pointerSelected").attr("_id");
@@ -265,7 +253,7 @@
 		$(".timeline-bar").append('<div class="pointer" _id="' + temp.cuePointId + '" videoId= "' + temp.videoId + '" media-id="' + temp.mediaEntryId + '"  style="left:' + (animateLeft) + 'px" id="' + divId + '"></div>');
 		$(".pointerSelected").hide();
 		$("#UpdateCuePoint").hide();
-		$("#addCuePoint").show();
+		$("#addCuePoint").hide();
 		// removeFromList(temp.cuePointId);
 		// cuePoints.push(temp);
 	};

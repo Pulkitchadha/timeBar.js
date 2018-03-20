@@ -14,7 +14,9 @@
 			<div id='timelineId'></div>
 			<br>
 			<br>
-			<input type='button' value='Refresh' onclick='window.location.reload();' />
+			<input id="cuepoint" type='text' placeholder="Enter time in seconds" />
+			<input id="add-btn" class='btn btn-primary btn-sm' type='button' value="Add" />
+			<input class='btn btn-default btn-sm' type='button' value='Refresh' onclick='window.location.reload();' />
 			<br>
 			<br> Duration:
 			<label id='duration'>0 Sec</label>
@@ -33,7 +35,7 @@
 	<script>
 		$(document).ready(function () {
 
-			$("#timelineId").timebar({
+			const timebar = $("#timelineId").timebar({
 				totalTimeInSecond: 550,
 				cuePoints: [0, 110, 220, 330, 440, 550],
 				width: '1000px',
@@ -46,6 +48,11 @@
 					const selectedTime = (time).toFixed(2) + ' Sec';
 					$("#duration").text(selectedTime);
 				}
+			});
+
+			$(document).on('click', '#add-btn', function () {
+				const time = $('#cuepoint').val();
+				timebar.addCuepoints(time);
 			});
 
 		});
