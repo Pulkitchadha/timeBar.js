@@ -1,7 +1,7 @@
 /**
  * Author: Pulkit Chadha
  * Plugin Name: Time Bar 
- * 
+ * LICENSE : MIT
  */
 (function ($) {
 	$.fn.timebar = function (options = {}) {
@@ -49,6 +49,9 @@
 		this.getCuepoints = function () {
 			return $.fn.timebar.defaults.cuepoints;
 		}
+		this.formatTime = function (sec_num) {
+			return toDuration(sec_num);
+		}
 		this.addCuepoints = function (cuepoint) {
 			if (!cuepoint) throw new Error('please pass the valid time');
 
@@ -82,6 +85,15 @@
 			return this;
 		}
 		this.updateSelectedCuepoint = function (cuepoint) {
+			const selectedCuepoints = [];
+
+			$(".pointerSelected").each(function () {
+				const id = $(this).attr("id");
+				selectedCuepoints.push(parseInt(id));
+			});
+
+			if (selectedCuepoints.length > 1) throw new Error('Please select only one cuepoint to update');
+
 			this.deleteSelectedCuepoints();
 
 			this.addCuepoints(cuepoint);
@@ -92,7 +104,7 @@
 			if (!show) throw new Error('please pass a valid value');
 
 			parseBoolean(show) ? $(".pointer").show() : $(".pointer").hide();
-			
+
 			return this;
 		}
 
@@ -232,11 +244,14 @@
 
 	function markCuepoints(cuepoints = []) {
 		const options = $.fn.timebar.defaults;
-		let cuepointArr = Array.isArray(cuepoints) ? cuepoints : [cuepoints];
+		const cuepointArr = Array.isArray(cuepoints) ? cuepoints : [cuepoints];
 
 		$.each(cuepointArr, function (i, time) {
-			const eff = (time * 100) / options.totalTimeInSecond;
-			const animateLeft = eff; //((ele.getActualWidth() * eff) / 100).toFixed(2);
+			// const eff = (time * 100) / options.totalTimeInSecond;
+			// const animateLeft = ((1000 * eff) / 100).toFixed(2);
+
+			// const animateLeft = eff; //((ele.getActualWidth() * eff) / 100).toFixed(2);
+			const animateLeft = (time * 100) / options.totalTimeInSecond;
 			$(".timeline-bar").append(`<div class="pointer" style="left:${animateLeft}%" id="${time}"></div>`);
 		});
 	}
@@ -262,7 +277,7 @@
 	};
 
 	function parseBoolean(val) {
-		return(val.toLowerCase() === 'true');
+		return (val.toLowerCase() === 'true');
 	}
 
 })(jQuery);
