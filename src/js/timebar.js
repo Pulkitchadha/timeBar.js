@@ -216,7 +216,7 @@
 
 		// mark bars
 		for (let i = 1; i <= 51; i++) {
-			$(".steps-bar").append(`<div class="step" data-time=${time}><span class="step-border"></span></div>`);
+			$(".steps-bar").append(`<div class="step" data-time=${time} id=${i}><span class="step-border"></span></div>`);
 			time = time + timeDivison;
 		}
 
@@ -264,7 +264,7 @@
 	}
 
 	function barClicked(element, event, self) {
-		const options = $.fn.timebar.defaults;
+		// const options = $.fn.timebar.defaults;
 
 		const offset = $(element).offset();
 		const offsetLeft = (event.pageX - offset.left);
