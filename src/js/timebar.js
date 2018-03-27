@@ -16,7 +16,7 @@
 			return $.fn.timebar.defaults.selectedTime;
 		};
 		this.setSelectedTime = function (time) {
-			if (!time) throw new Error('please pass the valid time');
+			if (!time && time !== 0) throw new Error('please pass the valid time');
 
 			$.fn.timebar.defaults.selectedTime = parseInt(time);
 			return this;
@@ -114,14 +114,17 @@
 			init(self);
 
 			// When user clicks on timebar
-			$(this).on('click', '.steps-bar', function (event) {
-				const time = barClicked(this, event, self);
-
-				self.setSelectedTime(time);
+			$(this).on('click', '.step', function (event) {
+				self.setSelectedTime($(this).data("time"));
 
 				if (typeof options.barClicked === 'function') {
 					options.barClicked.call(this, self.getSelectedTime());
 				}
+			});
+
+			// Move the step to the clicked positon
+			$(this).on('click', '.steps-bar', function (event) {
+				barClicked(this, event, self);
 			});
 
 			// when user clicks on cuepoints
@@ -130,7 +133,7 @@
 
 				$(this).hasClass("pointerSelected") ? $(this).removeClass("pointerSelected") : $(this).addClass("pointerSelected");
 
-				self.setSelectedTime($(this).attr("id"));
+				self.setSelectedTime($(this).data("time"));
 
 				if (typeof options.pointerClicked === 'function') {
 					options.pointerClicked.call(this, self.getSelectedTime());
@@ -192,25 +195,29 @@
 			position: 1,
 			time: '00:00'
 		}, {
-			position: 10,
+			position: 11,
 			time: toDuration(Math.round(options.totalTimeInSecond / 5))
 		}, {
-			position: 20,
+			position: 21,
 			time: toDuration(Math.round((options.totalTimeInSecond / 5) * 2))
 		}, {
-			position: 30,
+			position: 31,
 			time: toDuration(Math.round((options.totalTimeInSecond / 5) * 3))
 		}, {
-			position: 40,
+			position: 41,
 			time: toDuration(Math.round((options.totalTimeInSecond / 5) * 4))
 		}, {
-			position: 50,
+			position: 51,
 			time: toDuration(Math.round((options.totalTimeInSecond / 5) * 5))
 		}];
 
+		let timeDivison = options.totalTimeInSecond / 50;
+		let time = 0;
+
 		// mark bars
-		for (let i = 1; i <= 50; i++) {
-			$(".steps-bar").append('<div class="step"><span class="step-border"></span></div>');
+		for (let i = 1; i <= 51; i++) {
+			$(".steps-bar").append(`<div class="step" data-time=${time}><span class="step-border"></span></div>`);
+			time = time + timeDivison;
 		}
 
 		// mark time intervals
@@ -252,7 +259,7 @@
 
 			// const animateLeft = eff; //((ele.getActualWidth() * eff) / 100).toFixed(2);
 			const animateLeft = (time * 100) / options.totalTimeInSecond;
-			$(".timeline-bar").append(`<div class="pointer" style="left:${animateLeft}%" id="${time}"></div>`);
+			$(".timeline-bar").append(`<div class="pointer" style="left:${animateLeft}%" data-time="${time}"></div>`);
 		});
 	}
 
@@ -262,18 +269,18 @@
 		const offset = $(element).offset();
 		const offsetLeft = (event.pageX - offset.left);
 
-		const leftPos = offsetLeft;
-		const leftPosCal = (((leftPos * 100) / self.getActualWidth()).toFixed(0));
+		// const leftPos = offsetLeft;
+		// const leftPosCal = (((leftPos * 100) / self.getActualWidth()).toFixed(0));
 
-		const selectedTime = (options.totalTimeInSecond * leftPosCal) / 100;
+		// const selectedTime = (options.totalTimeInSecond * leftPosCal) / 100;
 
 		$('.pointer').removeClass("pointerSelected");
 
 		$("#draggable").css({
-			left: offsetLeft
+			left: `${offsetLeft}px`
 		});
 
-		return selectedTime;
+		// return selectedTime;
 	};
 
 	function parseBoolean(val) {
