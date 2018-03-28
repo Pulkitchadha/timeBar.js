@@ -1,8 +1,13 @@
-/**
- * Author: Pulkit Chadha
- * Plugin Name: Time Bar 
- * LICENSE : MIT
- */
+/*!
+  jQuery timebar plugin
+  @name jquery.timebar.js
+  @author pulkitchadha (pulkitchadha27@gmail.com]
+  @version 1.0
+  @date 28/03/2018
+  @category jQuery Plugin
+  @copyright (c) 2018 pulkitchadha (pulkitchadha)
+  @license Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
+*/
 (function ($) {
 	$.fn.timebar = function (options = {}) {
 		const self = this;
