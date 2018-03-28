@@ -152,9 +152,12 @@
 		selectedTime: 0,
 		multiSelect: false,
 		showCuepoints: true,
+		stepBars: 100,
+		timeIntervals: 10,
 		// events
 		barClicked: null,
 		pointerClicked: null,
+
 		//Currently, Not supported
 
 		// life cycle methods
@@ -165,12 +168,12 @@
 		beforeUpdate: null,
 		updated: null,
 		// hooks
-		beforeAddingCuepoint: null,
-		afterAddingCuepoint: null,
-		beforeUpdatingCuepoint: null,
-		afterUpdatingCuepoint: null,
-		beforeDeletingCuepoint: null,
-		afterDeletingCuepoint: null,
+		beforeAddCuepoint: null,
+		afterAddCuepoint: null,
+		beforeUpdateCuepoint: null,
+		afterUpdateCuepoint: null,
+		beforeDeleteCuepoint: null,
+		afterDeleteCuepoint: null,
 	};
 
 	function init(ele) {
@@ -191,39 +194,23 @@
 
 		ele.setWidth(options.width);
 
-		const intervals = [{
-			position: 1,
-			time: '00:00'
-		}, {
-			position: 11,
-			time: toDuration(Math.round(options.totalTimeInSecond / 5))
-		}, {
-			position: 21,
-			time: toDuration(Math.round((options.totalTimeInSecond / 5) * 2))
-		}, {
-			position: 31,
-			time: toDuration(Math.round((options.totalTimeInSecond / 5) * 3))
-		}, {
-			position: 41,
-			time: toDuration(Math.round((options.totalTimeInSecond / 5) * 4))
-		}, {
-			position: 51,
-			time: toDuration(Math.round((options.totalTimeInSecond / 5) * 5))
-		}];
-
-		let timeDivison = options.totalTimeInSecond / 50;
+		let timeDivison = options.totalTimeInSecond / options.stepBars;
 		let time = 0;
 
 		// mark bars
-		for (let i = 1; i <= 51; i++) {
-			$(".steps-bar").append(`<div class="step" data-time=${time} id=${i}><span class="step-border"></span></div>`);
+		for (let i = 0; i <= options.stepBars; i++) {
+			$(".steps-bar").append(`<div class="step" data-time=${time}><span class="step-border"></span></div>`);
 			time = time + timeDivison;
 		}
 
+		let markTimeDivison = options.totalTimeInSecond / options.timeIntervals;
+
 		// mark time intervals
-		intervals.forEach((interval) => {
-			$(`.step:nth-child(${interval.position})`).append(`<span class="time-instant">${interval.time}</span>`);
-		});
+		for (let i = 0; i <= options.timeIntervals; i++) {
+			const time = toDuration(Math.round(markTimeDivison * i));
+			const pos = i * 10 + 1;
+			$(`.step:nth-child(${pos})`).append(`<span class="time-instant">${time}</span>`);
+		}
 
 		markCuepoints(options.cuepoints);
 
@@ -254,33 +241,21 @@
 		const cuepointArr = Array.isArray(cuepoints) ? cuepoints : [cuepoints];
 
 		$.each(cuepointArr, function (i, time) {
-			// const eff = (time * 100) / options.totalTimeInSecond;
-			// const animateLeft = ((1000 * eff) / 100).toFixed(2);
-
-			// const animateLeft = eff; //((ele.getActualWidth() * eff) / 100).toFixed(2);
 			const animateLeft = (time * 100) / options.totalTimeInSecond;
 			$(".timeline-bar").append(`<div class="pointer" style="left:${animateLeft}%" data-time="${time}"></div>`);
 		});
 	}
 
 	function barClicked(element, event, self) {
-		// const options = $.fn.timebar.defaults;
 
 		const offset = $(element).offset();
 		const offsetLeft = (event.pageX - offset.left);
-
-		// const leftPos = offsetLeft;
-		// const leftPosCal = (((leftPos * 100) / self.getActualWidth()).toFixed(0));
-
-		// const selectedTime = (options.totalTimeInSecond * leftPosCal) / 100;
 
 		$('.pointer').removeClass("pointerSelected");
 
 		$("#draggable").css({
 			left: `${offsetLeft}px`
 		});
-
-		// return selectedTime;
 	};
 
 	function parseBoolean(val) {

@@ -14,21 +14,21 @@
 
 .steps-bar {
 	position: absolute;
-    left: 0;
-    width: 100%;
-    height: 50px;
-    cursor: pointer;
-    display: table;
-    /* top: -27; */
+	left: 0;
+	width: 100%;
+	height: 50px;
+	cursor: pointer;
+	display: table;
+	/* top: -27; */
 }
 
 .step {
 	/* float: left;  */
-    /* width: 1.996%; */
-    /* margin-top: 29px; */
-    text-align: center;
-    position: relative;
-    display: table-cell;
+	/* width: 1.996%; */
+	/* margin-top: 29px; */
+	text-align: center;
+	position: relative;
+	display: table-cell;
 }
 
 .step:last-child {
@@ -43,6 +43,13 @@
 }
 
 .step:nth-child(10n+1) .step-border {
+	height: 20px;
+	width: 2px;
+	background: #000;
+	margin-top: -10px;
+}
+
+.step-mark {
 	height: 20px;
 	width: 2px;
 	background: #000;
