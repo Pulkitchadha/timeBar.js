@@ -80,8 +80,13 @@
             this.showHideCuepoints = __bind(this.showHideCuepoints, this);
 
             // Listen to events
-            $(this.element).on('click', '.steps-bar', this._barClicked);
-            $(this.element).on("click", '.pointer', this._cuepointClicked);
+            $(this.element).on('click', '.step', function (event) {
+                self._barClicked(this, event, self);
+            });
+
+            $(this.element).on("click", '.pointer', function () {
+                self._cuepointClicked(this, self);
+            });
         };
 
         // Method for updating the plugins options.
@@ -128,7 +133,7 @@
             return this.cuepoints;
         }
         timebar.prototype.formatTime = function (sec_num) {
-            return toDuration(sec_num);
+            return this.toDuration(sec_num);
         }
         timebar.prototype.addCuepoints = function (cuepoint) {
             if (!cuepoint) throw new Error('please pass the valid time');
@@ -251,8 +256,8 @@
             });
         }
 
-        timebar.prototype._barClicked = function (event) {
-            const offset = $(this).offset();
+        timebar.prototype._barClicked = function (element, event, self) {
+            const offset = $(element).offset();
             const offsetLeft = (event.pageX - offset.left);
 
             $('.pointer').removeClass("pointerSelected");
@@ -260,15 +265,20 @@
             $("#draggable").css({
                 left: `${offsetLeft}px`
             });
+
+            self.setSelectedTime($(element).data("time"));
+
+            if (typeof self.barClicked === 'function') {
+                self.barClicked.call(element, self.getSelectedTime());
+            }
         };
-        timebar.prototype._cuepointClicked = function () {
+        timebar.prototype._cuepointClicked = function (element, self) {
+            $(element).hasClass("pointerSelected") ? $(element).removeClass("pointerSelected") : $(element).addClass("pointerSelected");
 
-            $(this).hasClass("pointerSelected") ? $(this).removeClass("pointerSelected") : $(this).addClass("pointerSelected");
+            self.setSelectedTime($(element).data("time"));
 
-            this.setSelectedTime($(this).data("time"));
-
-            if (typeof this.cuepointClicked === 'function') {
-                this.cuepointClicked.call(this, this.getSelectedTime());
+            if (typeof self.pointerClicked === 'function') {
+                self.pointerClicked.call(element, self.getSelectedTime());
             }
         }
 
