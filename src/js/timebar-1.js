@@ -79,14 +79,24 @@
             this.updateSelectedCuepoint = __bind(this.updateSelectedCuepoint, this);
             this.showHideCuepoints = __bind(this.showHideCuepoints, this);
 
-            // Listen to events
+            // When user clicks on timebar
             $(this.element).on('click', '.step', function (event) {
+                self.setSelectedTime($(this).data("time"));
+
+                if (typeof self.barClicked === 'function') {
+                    self.barClicked.call(this, self.getSelectedTime());
+                }
+            });
+
+            // Listen to events
+            $(this.element).on('click', '.steps-bar', function (event) {
                 self._barClicked(this, event, self);
             });
 
             $(this.element).on("click", '.pointer', function () {
                 self._cuepointClicked(this, self);
             });
+
         };
 
         // Method for updating the plugins options.
@@ -142,7 +152,7 @@
 
             if (!this.cuepoints.includes(cuepoint)) {
                 this.cuepoints.push(cuepoint);
-                markCuepoints(cuepoint);
+                this.markCuepoints(cuepoint);
             } else {
                 throw new Error('Cuepoint already exists');
             }
@@ -186,7 +196,7 @@
         timebar.prototype.showHideCuepoints = function (show) {
             if (!show) throw new Error('please pass a valid value');
 
-            parseBoolean(show) ? $(".pointer").show() : $(".pointer").hide();
+            this.parseBoolean(show) ? $(".pointer").show() : $(".pointer").hide();
 
             return this.timebarInstance;
         }
@@ -265,12 +275,6 @@
             $("#draggable").css({
                 left: `${offsetLeft}px`
             });
-
-            self.setSelectedTime($(element).data("time"));
-
-            if (typeof self.barClicked === 'function') {
-                self.barClicked.call(element, self.getSelectedTime());
-            }
         };
         timebar.prototype._cuepointClicked = function (element, self) {
             $(element).hasClass("pointerSelected") ? $(element).removeClass("pointerSelected") : $(element).addClass("pointerSelected");

@@ -128,7 +128,7 @@
 			});
 
 			// Move the step to the clicked positon
-			$(this).on('click', '.step', function (event) {
+			$(this).on('click', '.steps-bar', function (event) {
 				barClicked(this, event, self);
 			});
 
