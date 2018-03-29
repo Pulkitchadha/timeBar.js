@@ -56,6 +56,7 @@
     timebar = (function (options) {
 
         function timebar(element, options) {
+            var self = this;
 
             // Extend default options.
             $.extend(true, this, defaultOptions, options);
@@ -79,8 +80,8 @@
             this.showHideCuepoints = __bind(this.showHideCuepoints, this);
 
             // Listen to events
-            $(this).on('click', '.steps-bar', this._barClicked);
-            $(this).on("click", '.pointer', this._cuepointClicked);
+            $(this.element).on('click', '.steps-bar', this._barClicked);
+            $(this.element).on("click", '.pointer', this._cuepointClicked);
         };
 
         // Method for updating the plugins options.
@@ -96,7 +97,7 @@
             if (!time && time !== 0) throw new Error('please pass the valid time');
 
             this.selectedTime = parseInt(time);
-            return this;
+            return this.timebarInstance;
         };
         timebar.prototype.getTotalTime = function () {
             return this.totalTimeInSecond;
@@ -105,7 +106,7 @@
             if (!time) throw new Error('please pass the valid time');
 
             this.totalTimeInSecond = parseInt(time);
-            return this;
+            return this.timebarInstance;
         };
         timebar.prototype.getWidth = function () {
             return this.width;
@@ -116,7 +117,7 @@
             this.width = width;
             width = this.getActualWidth() + 57;
             $(".timeline-cover").css('width', width + 'px');
-            return this;
+            return this.timebarInstance;
         };
         timebar.prototype.getActualWidth = function () {
             let width = this.width;
@@ -141,7 +142,7 @@
                 throw new Error('Cuepoint already exists');
             }
 
-            return this;
+            return this.timebarInstance;
         }
         timebar.prototype.deleteSelectedCuepoints = function () {
             const cuepoints = this.cuepoints;
@@ -159,7 +160,7 @@
                 throw new Error('No Cuepoint is selected');
             }
 
-            return this;
+            return this.timebarInstance;
         }
         timebar.prototype.updateSelectedCuepoint = function (cuepoint) {
             const selectedCuepoints = [];
@@ -175,14 +176,14 @@
 
             this.addCuepoints(cuepoint);
 
-            return this;
+            return this.timebarInstance;
         }
         timebar.prototype.showHideCuepoints = function (show) {
             if (!show) throw new Error('please pass a valid value');
 
             parseBoolean(show) ? $(".pointer").show() : $(".pointer").hide();
 
-            return this;
+            return this.timebarInstance;
         }
 
         // Main method.
@@ -286,12 +287,10 @@
             this.timebarInstance.update(options || {});
         }
 
-        $.extend(true, this, this.timebarInstance);
-
         // Init plugin.
-        this.init();
+        this.timebarInstance.init();
 
         // return jQuery object to maintain chainability.
-        return this;
+        return this.timebarInstance;
     };
 })(jQuery);
