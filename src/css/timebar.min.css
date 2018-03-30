@@ -1,0 +1,11 @@
+/*!
+  jQuery timebar plugin
+  @name timebar.css
+  @author pulkitchadha (pulkitchadha27@gmail.com]
+  @version 1.0
+  @date 28/03/2018
+  @category jQuery Plugin
+  @copyright (c) 2018 pulkitchadha (pulkitchadha)
+  @license Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
+*/
+.timeline-cover{margin:20px 0;padding:0 25px 40px 25px;background:#F8F8F8;border:1px solid #ddd}.timeline-bar{height:2px;width:100%;background:#000;position:relative}.steps-bar{position:absolute;left:0;width:100%;height:50px;cursor:pointer;display:table}.step{text-align:center;position:relative;display:table-cell}.step:last-child{width:2px!important}.step:first-child .step-border{height:20px;width:2px;background:#000;margin-top:-10px}.step:nth-child(10n+1) .step-border{height:20px;width:2px;background:#000;margin-top:-10px}.step-mark{height:20px;width:2px;background:#000;margin-top:-10px}.step-border{height:10px;width:2px;background:#999;margin-left:1.5%;display:block}.time-instant{position:absolute;top:-30px;left:-17px}.pointer{position:absolute;top:10px;margin-left:-1%;border-width:10px;border-style:solid;border-color:transparent transparent #666 transparent;cursor:pointer;transition:100ms all linear;-webkit-transition:100ms all linear;-moz-transition:100ms all linear}.pointerSelected{border-color:transparent transparent #D04640 transparent!important}.selection-line{position:absolute;top:-10px;left:0;height:50px;width:2px;background:red}#draggable{height:50px;width:2px;background:red;top:24px;cursor:pointer;z-index:1000;position:relative}.MB10{margin-bottom:10px}#embedJWPlayerTarget{width:100%!important}#boxdiv{display:none}.cuepoint-btn{text-align:right;margin-right:14%}

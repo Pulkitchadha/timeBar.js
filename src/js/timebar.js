@@ -1,6 +1,6 @@
 /*!
   jQuery timebar plugin
-  @name jquery.timebar.js
+  @name timebar.js
   @author pulkitchadha (pulkitchadha27@gmail.com]
   @version 1.0
   @date 28/03/2018
@@ -252,7 +252,7 @@
             if (seconds < 10) {
                 seconds = "0" + Math.round(seconds);
             }
-            const time = (hours == 00) ? minutes + ':' + seconds : hours + ':' + minutes + ':' + seconds;
+            const time = (hours == 0) ? minutes + ':' + seconds : hours + ':' + minutes + ':' + seconds;
             return time;
         }
 
