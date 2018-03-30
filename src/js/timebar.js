@@ -9,262 +9,302 @@
   @license Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
 */
 (function ($) {
-	$.fn.timebar = function (options = {}) {
-		const self = this;
 
-		options = $.extend($.fn.timebar.defaults, options);
+    var timebar, defaultOptions, __bind;
 
-		$.fn.timebar.defaults.element = self;
+    __bind = function (fn, me) {
+        return function () {
+            return fn.apply(me, arguments);
+        };
+    };
 
-		// methods
-		this.getSelectedTime = function () {
-			return $.fn.timebar.defaults.selectedTime;
-		};
-		this.setSelectedTime = function (time) {
-			if (!time && time !== 0) throw new Error('please pass the valid time');
+    // Plugin default options.
+    defaultOptions = {
+        //properties
+        element: null,
+        totalTimeInSecond: 0,
+        cuepoints: [],
+        width: 0,
+        globalPageX: 0,
+        selectedTime: 0,
+        multiSelect: false,
+        showCuepoints: true,
+        stepBars: 100,
+        timeIntervals: 10,
+        // events
+        barClicked: null,
+        cuepointClicked: null,
 
-			$.fn.timebar.defaults.selectedTime = parseInt(time);
-			return this;
-		};
-		this.getTotalTime = function () {
-			return $.fn.timebar.defaults.totalTimeInSecond;
-		};
-		this.setTotalTime = function (time) {
-			if (!time) throw new Error('please pass the valid time');
+        //Currently, Not supported
 
-			$.fn.timebar.defaults.totalTimeInSecond = parseInt(time);
-			return this;
-		};
-		this.getWidth = function () {
-			return $.fn.timebar.defaults.width;
-		};
-		this.setWidth = function (width) {
-			if (!width) throw new Error('please pass the valid width');
+        // life cycle methods
+        beforeCreate: null,
+        created: null,
+        beforeMount: null,
+        mounted: null,
+        beforeUpdate: null,
+        updated: null,
+        // hooks
+        beforeAddCuepoint: null,
+        afterAddCuepoint: null,
+        beforeUpdateCuepoint: null,
+        afterUpdateCuepoint: null,
+        beforeDeleteCuepoint: null,
+        afterDeleteCuepoint: null,
+    };
 
-			$.fn.timebar.defaults.width = width;
-			width = this.getActualWidth() + 57;
-			$(".timeline-cover").css('width', width + 'px');
-			return this;
-		};
-		this.getActualWidth = function () {
-			let width = $.fn.timebar.defaults.width;
-			width = parseInt(width.replace(/px|%/g, ''));
-			return width;
-		}
-		this.getCuepoints = function () {
-			return $.fn.timebar.defaults.cuepoints;
-		}
-		this.formatTime = function (sec_num) {
-			return toDuration(sec_num);
-		}
-		this.addCuepoints = function (cuepoint) {
-			if (!cuepoint) throw new Error('please pass the valid time');
+    timebar = (function (options) {
 
-			cuepoint = parseInt(cuepoint);
+        function timebar(element, options) {
+            var self = this;
 
-			if (!$.fn.timebar.defaults.cuepoints.includes(cuepoint)) {
-				$.fn.timebar.defaults.cuepoints.push(cuepoint);
-				markCuepoints(cuepoint);
-			} else {
-				throw new Error('Cuepoint already exists');
-			}
+            // Extend default options.
+            $.extend(true, this, defaultOptions, options);
 
-			return this;
-		}
-		this.deleteSelectedCuepoints = function () {
-			const cuepoints = $.fn.timebar.defaults.cuepoints;
-			const selectedCuepoints = [];
+            this.element = element;
 
-			$(".pointerSelected").each(function () {
-				const id = $(this).attr("id");
-				selectedCuepoints.push(parseInt(id));
-			});
+            // Bind methods.
+            this.init = __bind(this.init, this);
+            this.update = __bind(this.update, this);
+            this.getSelectedTime = __bind(this.getSelectedTime, this);
+            this.setSelectedTime = __bind(this.setSelectedTime, this);
+            this.getTotalTime = __bind(this.getTotalTime, this);
+            this.setTotalTime = __bind(this.setTotalTime, this);
+            this.getWidth = __bind(this.getWidth, this);
+            this.setWidth = __bind(this.setWidth, this);
+            this.getActualWidth = __bind(this.getActualWidth, this);
+            this.formatTime = __bind(this.formatTime, this);
+            this.addCuepoints = __bind(this.addCuepoints, this);
+            this.deleteSelectedCuepoints = __bind(this.deleteSelectedCuepoints, this);
+            this.updateSelectedCuepoint = __bind(this.updateSelectedCuepoint, this);
+            this.showHideCuepoints = __bind(this.showHideCuepoints, this);
 
-			if (selectedCuepoints.length) {
-				$.fn.timebar.defaults.cuepoints = cuepoints.filter((val) => !selectedCuepoints.includes(val));
-				$(".pointerSelected").remove();
-			} else {
-				throw new Error('No Cuepoint is selected');
-			}
+            // When user clicks on timebar
+            $(this.element).on('click', '.step', function (event) {
+                self.setSelectedTime($(this).data("time"));
 
-			return this;
-		}
-		this.updateSelectedCuepoint = function (cuepoint) {
-			const selectedCuepoints = [];
+                if (typeof self.barClicked === 'function') {
+                    self.barClicked.call(this, self.getSelectedTime());
+                }
+            });
 
-			$(".pointerSelected").each(function () {
-				const id = $(this).attr("id");
-				selectedCuepoints.push(parseInt(id));
-			});
+            // Listen to events
+            $(this.element).on('click', '.steps-bar', function (event) {
+                self._barClicked(this, event, self);
+            });
 
-			if (selectedCuepoints.length > 1) throw new Error('Please select only one cuepoint to update');
+            $(this.element).on("click", '.pointer', function () {
+                self._cuepointClicked(this, self);
+            });
 
-			this.deleteSelectedCuepoints();
+        };
 
-			this.addCuepoints(cuepoint);
+        // Method for updating the plugins options.
+        timebar.prototype.update = function (options) {
+            $.extend(true, this, options);
+        };
 
-			return this;
-		}
-		this.showHideCuepoints = function (show) {
-			if (!show) throw new Error('please pass a valid value');
+        // methods
+        timebar.prototype.getSelectedTime = function () {
+            return this.selectedTime;
+        };
+        timebar.prototype.setSelectedTime = function (time) {
+            if (!time && time !== 0) throw new Error('please pass the valid time');
 
-			parseBoolean(show) ? $(".pointer").show() : $(".pointer").hide();
+            this.selectedTime = parseInt(time);
+            return this.timebarInstance;
+        };
+        timebar.prototype.getTotalTime = function () {
+            return this.totalTimeInSecond;
+        };
+        timebar.prototype.setTotalTime = function (time) {
+            if (!time) throw new Error('please pass the valid time');
 
-			return this;
-		}
+            this.totalTimeInSecond = parseInt(time);
+            return this.timebarInstance;
+        };
+        timebar.prototype.getWidth = function () {
+            return this.width;
+        };
+        timebar.prototype.setWidth = function (width) {
+            if (!width) throw new Error('please pass the valid width');
 
-		// events
+            this.width = width;
+            width = this.getActualWidth() + 57;
+            $(".timeline-cover").css('width', width + 'px');
+            return this.timebarInstance;
+        };
+        timebar.prototype.getActualWidth = function () {
+            let width = this.width;
+            width = parseInt(width.replace(/px|%/g, ''));
+            return width;
+        }
+        timebar.prototype.getCuepoints = function () {
+            return this.cuepoints;
+        }
+        timebar.prototype.formatTime = function (sec_num) {
+            return this.toDuration(sec_num);
+        }
+        timebar.prototype.addCuepoints = function (cuepoint) {
+            if (!cuepoint) throw new Error('please pass the valid time');
 
-		return self.each(function () {
-			init(self);
+            cuepoint = parseInt(cuepoint);
 
-			// When user clicks on timebar
-			$(this).on('click', '.step', function (event) {
-				self.setSelectedTime($(this).data("time"));
+            if (!this.cuepoints.includes(cuepoint)) {
+                this.cuepoints.push(cuepoint);
+                this.markCuepoints(cuepoint);
+            } else {
+                throw new Error('Cuepoint already exists');
+            }
 
-				if (typeof options.barClicked === 'function') {
-					options.barClicked.call(this, self.getSelectedTime());
-				}
-			});
+            return this.timebarInstance;
+        }
+        timebar.prototype.deleteSelectedCuepoints = function () {
+            const cuepoints = this.cuepoints;
+            const selectedCuepoints = [];
 
-			// Move the step to the clicked positon
-			$(this).on('click', '.steps-bar', function (event) {
-				barClicked(this, event, self);
-			});
+            $(".pointerSelected").each(function () {
+                const id = $(this).attr("id");
+                selectedCuepoints.push(parseInt(id));
+            });
 
-			// when user clicks on cuepoints
-			$(this).on("click", '.pointer', function () {
-				const options = $.fn.timebar.defaults;
+            if (selectedCuepoints.length) {
+                this.cuepoints = cuepoints.filter((val) => !selectedCuepoints.includes(val));
+                $(".pointerSelected").remove();
+            } else {
+                throw new Error('No Cuepoint is selected');
+            }
 
-				$(this).hasClass("pointerSelected") ? $(this).removeClass("pointerSelected") : $(this).addClass("pointerSelected");
+            return this.timebarInstance;
+        }
+        timebar.prototype.updateSelectedCuepoint = function (cuepoint) {
+            const selectedCuepoints = [];
 
-				self.setSelectedTime($(this).data("time"));
+            $(".pointerSelected").each(function () {
+                const id = $(this).attr("id");
+                selectedCuepoints.push(parseInt(id));
+            });
 
-				if (typeof options.pointerClicked === 'function') {
-					options.pointerClicked.call(this, self.getSelectedTime());
-				}
-			});
-		});
-	};
+            if (selectedCuepoints.length > 1) throw new Error('Please select only one cuepoint to update');
 
-	$.fn.timebar.defaults = {
-		//properties
-		element: null,
-		totalTimeInSecond: 0,
-		cuepoints: [],
-		width: 0,
-		globalPageX: 0,
-		selectedTime: 0,
-		multiSelect: false,
-		showCuepoints: true,
-		stepBars: 100,
-		timeIntervals: 10,
-		// events
-		barClicked: null,
-		pointerClicked: null,
+            this.deleteSelectedCuepoints();
 
-		//Currently, Not supported
+            this.addCuepoints(cuepoint);
 
-		// life cycle methods
-		beforeCreate: null,
-		created: null,
-		beforeMount: null,
-		mounted: null,
-		beforeUpdate: null,
-		updated: null,
-		// hooks
-		beforeAddCuepoint: null,
-		afterAddCuepoint: null,
-		beforeUpdateCuepoint: null,
-		afterUpdateCuepoint: null,
-		beforeDeleteCuepoint: null,
-		afterDeleteCuepoint: null,
-	};
+            return this.timebarInstance;
+        }
+        timebar.prototype.showHideCuepoints = function (show) {
+            if (!show) throw new Error('please pass a valid value');
 
-	function init(ele) {
+            this.parseBoolean(show) ? $(".pointer").show() : $(".pointer").hide();
 
-		const options = $.fn.timebar.defaults;
+            return this.timebarInstance;
+        }
 
-		let data = '';
+        // Main method.
+        timebar.prototype.init = function () {
+            let data = `<div class='timeline-cover'>
+                            <div id='draggable'></div>
+                            <div class='timeline-bar'>
+                                <div class='steps-bar clearfix'></div>
+                            </div>
+                        </div>`;
 
-		//time bar
-		data += `<div class='timeline-cover'>
-					<div id='draggable'></div>
-					<div class='timeline-bar'>
-						<div class='steps-bar clearfix'></div>
-					</div>
-				</div>`;
+            $(this.element).append(data);
 
-		$(options.element).append(data);
+            this.setWidth(this.width);
 
-		ele.setWidth(options.width);
+            let timeDivison = this.totalTimeInSecond / this.stepBars;
+            let time = 0;
 
-		let timeDivison = options.totalTimeInSecond / options.stepBars;
-		let time = 0;
+            // mark bars
+            for (let i = 0; i <= this.stepBars; i++) {
+                $(".steps-bar").append(`<div class="step" data-time=${time}><span class="step-border"></span></div>`);
+                time = time + timeDivison;
+            }
 
-		// mark bars
-		for (let i = 0; i <= options.stepBars; i++) {
-			$(".steps-bar").append(`<div class="step" data-time=${time}><span class="step-border"></span></div>`);
-			time = time + timeDivison;
-		}
+            let markTimeDivison = this.totalTimeInSecond / this.timeIntervals;
 
-		let markTimeDivison = options.totalTimeInSecond / options.timeIntervals;
+            // mark time intervals
+            for (let i = 0; i <= this.timeIntervals; i++) {
+                const time = this.toDuration(Math.round(markTimeDivison * i));
+                const pos = i * 10 + 1;
+                $(`.step:nth-child(${pos})`).append(`<span class="time-instant">${time}</span>`);
+            }
 
-		// mark time intervals
-		for (let i = 0; i <= options.timeIntervals; i++) {
-			const time = toDuration(Math.round(markTimeDivison * i));
-			const pos = i * 10 + 1;
-			$(`.step:nth-child(${pos})`).append(`<span class="time-instant">${time}</span>`);
-		}
+            this.markCuepoints(this.cuepoints);
 
-		markCuepoints(options.cuepoints);
+            if (!this.showCuepoints) {
+                $(".pointer").hide();
+            }
+        };
 
-		if (!options.showCuepoints) {
-			$(".pointer").hide();
-		}
-	};
+        timebar.prototype.toDuration = function (sec_num) {
+            let hours = Math.floor(sec_num / 3600);
+            let minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+            let seconds = sec_num - (hours * 3600) - (minutes * 60);
+            if (hours < 10) {
+                hours = "0" + Math.round(hours);
+            }
+            if (minutes < 10) {
+                minutes = "0" + Math.round(minutes);
+            }
+            if (seconds < 10) {
+                seconds = "0" + Math.round(seconds);
+            }
+            const time = (hours == 00) ? minutes + ':' + seconds : hours + ':' + minutes + ':' + seconds;
+            return time;
+        }
 
-	function toDuration(sec_num) {
-		let hours = Math.floor(sec_num / 3600);
-		let minutes = Math.floor((sec_num - (hours * 3600)) / 60);
-		let seconds = sec_num - (hours * 3600) - (minutes * 60);
-		if (hours < 10) {
-			hours = "0" + Math.round(hours);
-		}
-		if (minutes < 10) {
-			minutes = "0" + Math.round(minutes);
-		}
-		if (seconds < 10) {
-			seconds = "0" + Math.round(seconds);
-		}
-		const time = (hours == 00) ? minutes + ':' + seconds : hours + ':' + minutes + ':' + seconds;
-		return time;
-	}
+        timebar.prototype.markCuepoints = function (cuepoints = []) {
+            const options = this;
+            const cuepointArr = Array.isArray(cuepoints) ? cuepoints : [cuepoints];
 
-	function markCuepoints(cuepoints = []) {
-		const options = $.fn.timebar.defaults;
-		const cuepointArr = Array.isArray(cuepoints) ? cuepoints : [cuepoints];
+            $.each(cuepointArr, function (i, time) {
+                const animateLeft = (time * 100) / options.totalTimeInSecond;
+                $(".timeline-bar").append(`<div class="pointer" style="left:${animateLeft}%" data-time="${time}"></div>`);
+            });
+        }
 
-		$.each(cuepointArr, function (i, time) {
-			const animateLeft = (time * 100) / options.totalTimeInSecond;
-			$(".timeline-bar").append(`<div class="pointer" style="left:${animateLeft}%" data-time="${time}"></div>`);
-		});
-	}
+        timebar.prototype._barClicked = function (element, event, self) {
+            const offset = $(element).offset();
+            const offsetLeft = (event.pageX - offset.left);
 
-	function barClicked(element, event, self) {
+            $('.pointer').removeClass("pointerSelected");
 
-		const offset = $(element).offset();
-		const offsetLeft = (event.pageX - offset.left);
+            $("#draggable").css({
+                left: `${offsetLeft}px`
+            });
+        };
+        timebar.prototype._cuepointClicked = function (element, self) {
+            $(element).hasClass("pointerSelected") ? $(element).removeClass("pointerSelected") : $(element).addClass("pointerSelected");
 
-		$('.pointer').removeClass("pointerSelected");
+            self.setSelectedTime($(element).data("time"));
 
-		$("#draggable").css({
-			left: `${offsetLeft}px`
-		});
-	};
+            if (typeof self.pointerClicked === 'function') {
+                self.pointerClicked.call(element, self.getSelectedTime());
+            }
+        }
 
-	function parseBoolean(val) {
-		return (val.toLowerCase() === 'true');
-	}
+        timebar.prototype.parseBoolean = function (val) {
+            return (val.toLowerCase() === 'true');
+        }
 
+        return timebar;
+    })();
+
+    $.fn.timebar = function (options) {
+        // Create a timebar instance if not available.
+        if (!this.timebarInstance) {
+            this.timebarInstance = new timebar(this, options || {});
+        } else {
+            this.timebarInstance.update(options || {});
+        }
+
+        // Init plugin.
+        this.timebarInstance.init();
+
+        // return jQuery object to maintain chainability.
+        return this.timebarInstance;
+    };
 })(jQuery);
