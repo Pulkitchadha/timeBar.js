@@ -22,9 +22,9 @@
     defaultOptions = {
         //properties
         element: null,
-        totalTimeInSecond: 0,
+        totalTimeInSecond: 60,
         cuepoints: [],
-        width: 0,
+        width: '1000px',
         globalPageX: 0,
         selectedTime: 0,
         multiSelect: false,
@@ -160,11 +160,11 @@
             return this.timebarInstance;
         }
         timebar.prototype.deleteSelectedCuepoints = function () {
-            const cuepoints = this.cuepoints;
-            const selectedCuepoints = [];
+            var cuepoints = this.cuepoints;
+            var selectedCuepoints = [];
 
             $(".pointerSelected").each(function () {
-                const id = $(this).attr("id");
+                var id = $(this).attr("id");
                 selectedCuepoints.push(parseInt(id));
             });
 
@@ -178,10 +178,10 @@
             return this.timebarInstance;
         }
         timebar.prototype.updateSelectedCuepoint = function (cuepoint) {
-            const selectedCuepoints = [];
+            var selectedCuepoints = [];
 
             $(".pointerSelected").each(function () {
-                const id = $(this).attr("id");
+                var id = $(this).attr("id");
                 selectedCuepoints.push(parseInt(id));
             });
 
@@ -227,8 +227,8 @@
 
             // mark time intervals
             for (let i = 0; i <= this.timeIntervals; i++) {
-                const time = this.toDuration(Math.round(markTimeDivison * i));
-                const pos = i * 10 + 1;
+                var time = this.toDuration(Math.round(markTimeDivison * i));
+                var pos = i * 10 + 1;
                 $(`.step:nth-child(${pos})`).append(`<span class="time-instant">${time}</span>`);
             }
 
@@ -252,23 +252,23 @@
             if (seconds < 10) {
                 seconds = "0" + Math.round(seconds);
             }
-            const time = (hours == 0) ? minutes + ':' + seconds : hours + ':' + minutes + ':' + seconds;
+            var time = (hours == 0) ? minutes + ':' + seconds : hours + ':' + minutes + ':' + seconds;
             return time;
         }
 
         timebar.prototype.markCuepoints = function (cuepoints = []) {
-            const options = this;
-            const cuepointArr = Array.isArray(cuepoints) ? cuepoints : [cuepoints];
+            var options = this;
+            var cuepointArr = Array.isArray(cuepoints) ? cuepoints : [cuepoints];
 
             $.each(cuepointArr, function (i, time) {
-                const animateLeft = (time * 100) / options.totalTimeInSecond;
+                var animateLeft = (time * 100) / options.totalTimeInSecond;
                 $(".timeline-bar").append(`<div class="pointer" style="left:${animateLeft}%" data-time="${time}"></div>`);
             });
         }
 
         timebar.prototype._barClicked = function (element, event, self) {
-            const offset = $(element).offset();
-            const offsetLeft = (event.pageX - offset.left);
+            var offset = $(element).offset();
+            var offsetLeft = (event.pageX - offset.left);
 
             $('.pointer').removeClass("pointerSelected");
 
