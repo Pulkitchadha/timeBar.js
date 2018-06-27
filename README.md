@@ -2,6 +2,9 @@
 
 > It is a timebar where user can set cuepoints at a specific time and get selected time by clicking on cuepoints or timebar.It is useful for video streaming applications where user want to perform any specific task on a particular time interval.
 
+## Documentation
+* [Website](https://jquery-timebar-demo.herokuapp.com/)
+
 ## Installation
 
 1) Include these two files :
@@ -36,8 +39,6 @@
 9) getWidth : return width ,func()
 10) setWidth : pass width , func(string)
 11) getCuepoints : return cuepoints in array, func()
-
-## Events
 
 ## License
 
