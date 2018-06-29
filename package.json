@@ -1,0 +1,23 @@
+{
+  "name": "jquery-time-bar",
+  "version": "1.0.0",
+  "description": "simple timebar for adding cuepoints.",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pulkitchadha/Time-bar.git"
+  },
+  "keywords": [
+    "jquery",
+    "time-bar"
+  ],
+  "author": "pulkit chadha",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Pulkitchadha/Time-bar/issues"
+  },
+  "homepage": "https://github.com/Pulkitchadha/Time-bar#readme"
+}
