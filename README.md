@@ -1,7 +1,5 @@
 # jquery-time-bar [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url]
 
-> It is a timebar where user can set cuepoints at a specific time and get selected time by clicking on cuepoints or timebar.It is useful for video streaming applications where user want to perform any specific task on a particular time interval.
-
 ## Demo
 * [Link](https://jquery-timebar-demo.herokuapp.com/)
 
