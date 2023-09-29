@@ -82,17 +82,17 @@ timebar.showHideCuepoints();
 6) showCuepoints: Boolean, Default: false
 
 ## Methods
-1) addCuepoints: pass time in seconds,func(integer)
-2) updateSelectedCuepoint: pass new time in seconds,func(integer)
-3) deleteSelectedCuepoints: func()
-4) showHideCuepoints: accept value in true or false,func(boolean)
-5) getSelectedTime: return time in seconds, func
-6) setSelectedTime: pass the time in seconds, func(integer)
-7) getTotalTime: return total time in seconds, func
-8) setTotalTime: pass time in seconds, func(integer)
-9) getWidth: return width,func()
-10) setWidth: pass width, func(string)
-11) getCuepoints: return cuepoints in array, func()
+1) addCuepoints: Accept time in sec.
+2) updateSelectedCuepoint: Accept new time in sec.
+3) deleteSelectedCuepoints: NA
+4) showHideCuepoints: Accept value in boolean.
+5) getSelectedTime: return time in sec.
+6) setSelectedTime: pass the time in sec.
+7) getTotalTime: return total time in sec.
+8) setTotalTime: Accept time in sec.
+9) getWidth: return width.
+10) setWidth: Accept width.
+11) getCuepoints: return cuepoints.
 
 ## License
 
