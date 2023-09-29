@@ -1,32 +1,76 @@
-# jquery-time-bar [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url]
+# timeBar.js [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url]
+> A creative jQuery duration picker plugin that makes it easy to select a time duration in seconds from a horizontal time bar with custom scales and markers
 
 ## Demo
 * [Link](https://codepen.io/pulkitchadha/pen/dywKWpB)
 
+![image](https://github.com/Pulkitchadha/timeBar.js/assets/30553038/3ff4e9e3-4967-4e47-82a7-079f9b0554ca)
 
-## Installation
 
-1) Include timebar.min.js  && timebar.min.css in your index.html.
+## How to use it:
+
+1) Add the timeBar.js plugin's files to the HTML page.
 
 ```bash
     <link href="https://cdn.jsdelivr.net/gh/pulkitchadha/time-bar/src/css/timebar.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/pulkitchadha/time-bar/src/js/timebar.min.js"></script>
 ```
 
-2) Add a div with an ID to load the timebar.
+2) Create a container to place the time bar
 
 ```bash
     <div id="timelineId"></div>
 ```
 
-3) Then, Add the below code
-
-
+3) Initialize the plugin and specify an array of preset points as follows
 ```bash
     $(document).ready( function () {
-        $("#timelineId").timebar();
+        const timebar = $("#timelineId").timebar({
+          totalTimeInSecond: 550,
+          cuepoints: [0, 110, 220, 330, 440, 550]
+        });
     } );
 ```
+5) All default options to customize the time bar.
+```bash
+const timebar = $("#timelineId").timebar({
+      element: null,
+      totalTimeInSecond: 0,
+      cuepoints: [],
+      width: 0,
+      globalPageX: 0,
+      selectedTime: 0,
+      multiSelect:false,
+      showCuepoints:true,
+});
+```
+7) Callback functions that can be used to display the selected time duration
+```bash
+const timebar = $("#timelineId").timebar({
+      barClicked(time) {
+        // do something
+      },
+      pointerClicked(time) {
+        // do something
+      }
+});
+```
+9) API methods.
+```bash
+//Add a new point
+timebar.addCuepoints(time);
+ 
+// updates the selected point
+timebar.updateSelectedCuepoint(time);
+ 
+// deletes selected point
+timebar.deleteSelectedCuepoints();
+ 
+// shows/hides points
+timebar.showHideCuepoints();
+```
+
 
 ## Options
 
