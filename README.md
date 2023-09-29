@@ -1,42 +1,54 @@
 # jquery-time-bar [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url]
 
 ## Demo
-* [Link](https://jquery-timebar-demo.herokuapp.com/)
+* [Link](https://codepen.io/pulkitchadha/pen/dywKWpB)
+
 
 ## Installation
 
-1) Include these two files :
-    timebar.js  && timebar.css in your index.html.
+1) Include timebar.min.js  && timebar.min.css in your index.html.
 
-2)  Call this single function
+```bash
+    <link href="https://cdn.jsdelivr.net/gh/pulkitchadha/time-bar/src/css/timebar.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/gh/pulkitchadha/time-bar/src/js/timebar.min.js"></script>
+```
 
+2) Add a div with an ID to load the timebar.
+
+```bash
+    <div id="timelineId"></div>
+```
+
+3) Then, Add the below code
+
+
+```bash
     $(document).ready( function () {
-        $("#mytimebar").timebar();
+        $("#timelineId").timebar();
     } );
-
-3) done.
+```
 
 ## Options
 
-1) totalTimeInSecond: Integer, Default value : 60
-2) cuepoints: Array,Default value : 60
-3) width: String,Default value : '1000px'
-4) multiSelect: Boolean,Default value : false
-5) selectedTime: Integer, Default value : 0
-6) showCuepoints: Boolean, Default value : false
+1) totalTimeInSecond: Integer, Default value: 60
+2) cuepoints: Array, Default: 60
+3) width: String, Default: '1000px'
+4) multiSelect: Boolean, Default: false
+5) selectedTime: Integer, Default  : 0
+6) showCuepoints: Boolean, Default: false
 
 ## Methods
-1) addCuepoints : pass time in seconds,func(integer)
+1) addCuepoints: pass time in seconds,func(integer)
 2) updateSelectedCuepoint: pass new time in seconds,func(integer)
 3) deleteSelectedCuepoints: func()
-4) showHideCuepoints : accept value in true or false,func(boolean)
-5) getSelectedTime : return time in seconds, func
-6) setSelectedTime: pass time in seconds, func(integer)
-7) getTotalTime : return total time in seconds, func
-8) setTotalTime : pass time in seconds , func(integer)
-9) getWidth : return width ,func()
-10) setWidth : pass width , func(string)
-11) getCuepoints : return cuepoints in array, func()
+4) showHideCuepoints: accept value in true or false,func(boolean)
+5) getSelectedTime: return time in seconds, func
+6) setSelectedTime: pass the time in seconds, func(integer)
+7) getTotalTime: return total time in seconds, func
+8) setTotalTime: pass time in seconds, func(integer)
+9) getWidth: return width,func()
+10) setWidth: pass width, func(string)
+11) getCuepoints: return cuepoints in array, func()
 
 ## License
 
